@@ -1,6 +1,8 @@
 from pygments.lexer import RegexLexer, bygroups
 from pygments.token import Text, String, Keyword, Name, Operator
 
+__all__ = ['DiscogsCliLexer']
+
 
 class DiscogsCliLexer(RegexLexer):
 
@@ -10,10 +12,11 @@ class DiscogsCliLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r'\s+', Text),
-            (r'(?i)(release|artist|label)(\s*)', Keyword),
-            (r'exit\s*', Keyword, 'end'),
-            (r'quit\s*', Keyword, 'end')
+            (r'(ogs)\s+', Keyword),
+            (r'(\w+)(\s+)(\d+)', bygroups(Keyword, Text, String)),
+            (r'(\w+)(\s+)(--\w+\s+\w+\s+)?(\w+)', bygroups(Keyword,
+                    Text, Operator, String)),
+            (r'(exit|quit)\s*', String, 'end'),
         ],
         'end': [
             (r'\n', Text, 'root')

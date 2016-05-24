@@ -3,7 +3,7 @@
 import click
 import sys
 
-from .discogs import Release, Artist, Label
+from .discogs import Release, Artist, Label, Search, Master
 
 import requests
 requests.packages.urllib3.disable_warnings()
@@ -43,23 +43,44 @@ def release(release_id):
 
 
 @cli.command('artist')
-@click.argument('arist_id')
-def artist(arist_id):
+@click.argument('artist_id')
+def artist(artist_id):
     """Retrieve artist information and their associated releases."""
-    r = Artist(arist_id)
+    r = Artist(artist_id)
     try:
         r.show()
     except Exception as e:
-        click.secho('Unable to fetch artist id: {arist_id} ({e})'.format(
-            arist_id=arist_id, e=e), fg='red')
+        click.secho('Unable to fetch artist id: {artist_id} ({e})'.format(
+            artist_id=artist_id, e=e), fg='red')
         sys.exit(1)
 
 
+@cli.command('master')
+@click.argument('master_id')
+def artist(master_id):
+    """Retrieve master release information and their associated versions."""
+    r = Master(master_id)
+    #try:
+    r.show()
+    #except Exception as e:
+    #    click.secho('Unable to fetch master id: {master_id} ({e})'.format(
+    #        master_id=master_id, e=e), fg='red')
+    #    sys.exit(1)
+
+
 @cli.command('search')
-@click.argument('q')
-def search(q):
+@click.argument('query')
+@click.option('--lookup', default='release')
+def search(query, lookup):
     """Search for Discogs artist, release, label information."""
-    click.secho('Not yet implmented.', fg='red')
+
+    s = Search(query, q_type=lookup)
+    try:
+        s.show()
+    except Exception as e:
+        click.secho('Unable to perform a {t} search for {q} ({e})'.format(
+             t=lookup, q=query, e=e), fg='red')
+        sys.exit(1)
 
 if __name__ == '__main__':
     cli()

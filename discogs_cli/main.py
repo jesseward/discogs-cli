@@ -36,12 +36,12 @@ def cli():
     style = style_from_pygments(get_style_by_name('monokai'))
     lexer = PygmentsLexer(DiscogsCliLexer)
 
-    click.secho('     _ _                                    _ _ ', fg='red')
-    click.secho('  __| (_)___  ___ ___   __ _ ___        ___| (_)', fg='red')
-    click.secho(' / _` | / __|/ __/ _ \ / _` / __|_____ / __| | |', fg='red')
-    click.secho('| (_| | \__ \ (_| (_) | (_| \__ \_____| (__| | |', fg='red')
-    click.secho(' \__,_|_|___/\___\___/ \__, |___/      \___|_|_|', fg='red')
-    click.secho('                       |___/', fg='red')
+    click.secho('     _ _                                    _ _ ', fg='yellow')
+    click.secho('  __| (_)___  ___ ___   __ _ ___        ___| (_)', fg='yellow')
+    click.secho(' / _` | / __|/ __/ _ \ / _` / __|_____ / __| | |', fg='yellow')
+    click.secho('| (_| | \__ \ (_| (_) | (_| \__ \_____| (__| | |', fg='yellow')
+    click.secho(' \__,_|_|___/\___\___/ \__, |___/      \___|_|_|', fg='yellow')
+    click.secho('                       |___/', fg='yellow')
 
     click.echo('Version:' + __version__)
     click.echo('Syntax: ogs <command> [options]')
@@ -49,12 +49,12 @@ def cli():
 
         try:
             text = prompt('discogs-cli >>> ', style=style, history=history,
-                    lexer=lexer, completer=command_completer)
+                          lexer=lexer, completer=command_completer)
         except EOFError:
             break
 
         if text in EXIT:
-            sys.exit(0)
+            break
 
         if text.startswith(TOKEN):
             execute(text)
