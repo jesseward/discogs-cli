@@ -14,8 +14,8 @@ class DiscogsCliLexer(RegexLexer):
         'root': [
             (r'(ogs)\s+', Keyword),
             (r'(\w+)(\s+)(\d+)', bygroups(Keyword, Text, String)),
-            (r'(\w+)(\s+)(--\w+\s+\w+\s+)?(\w+)', bygroups(Keyword,
-                    Text, Operator, String)),
+            (r'(\w+)(\s+)(--lookup\s+\w+)?(\s+)?([\"\w\s]+)',
+                    bygroups(Keyword, Text, Operator, Text, String)),
             (r'(exit|quit)\s*', String, 'end'),
         ],
         'end': [

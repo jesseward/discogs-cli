@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import click
+import os
 import sys
 
 from .discogs import Release, Artist, Label, Search, Master
@@ -25,7 +26,6 @@ def label(label_id):
     except Exception as e:
         click.secho('Unable to fetch label id: {label_id} ({e})'.format(
             label_id=label_id, e=e), fg='red')
-        sys.exit(1)
 
 
 @cli.command('release')
@@ -39,7 +39,6 @@ def release(release_id):
     except Exception as e:
         click.secho('Unable to fetch release id: {release_id} ({e})'.format(
             release_id=release_id, e=e), fg='red')
-        sys.exit(1)
 
 
 @cli.command('artist')
@@ -52,7 +51,6 @@ def artist(artist_id):
     except Exception as e:
         click.secho('Unable to fetch artist id: {artist_id} ({e})'.format(
             artist_id=artist_id, e=e), fg='red')
-        sys.exit(1)
 
 
 @cli.command('master')
@@ -60,12 +58,11 @@ def artist(artist_id):
 def artist(master_id):
     """Retrieve master release information and their associated versions."""
     r = Master(master_id)
-    #try:
-    r.show()
-    #except Exception as e:
-    #    click.secho('Unable to fetch master id: {master_id} ({e})'.format(
-    #        master_id=master_id, e=e), fg='red')
-    #    sys.exit(1)
+    try:
+        r.show()
+    except Exception as e:
+        click.secho('Unable to fetch master id: {master_id} ({e})'.format(
+            master_id=master_id, e=e), fg='red')
 
 
 @cli.command('search')
@@ -74,13 +71,18 @@ def artist(master_id):
 def search(query, lookup):
     """Search for Discogs artist, release, label information."""
 
-    s = Search(query, q_type=lookup)
-    try:
-        s.show()
-    except Exception as e:
-        click.secho('Unable to perform a {t} search for {q} ({e})'.format(
-             t=lookup, q=query, e=e), fg='red')
-        sys.exit(1)
+    token = os.environ.get('TOKEN')
+    if not token:
+        click.secho('Unable to read your user_token. try export TOKEN=your_discogs_token_here',
+                    fg='red')
+    else:
+        s = Search(query, q_type=lookup, user_token=token)
+
+        try:
+            s.show()
+        except Exception as e:
+            click.secho('Unable to perform a {t} search for {q} ({e})'.format(
+                 t=lookup, q=query, e=e), fg='red')
 
 if __name__ == '__main__':
     cli()

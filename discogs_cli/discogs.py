@@ -3,21 +3,39 @@
 from __future__ import unicode_literals
 
 import click
-import os  # TODO : temp
 
 from .__init__ import __version__
 from discogs_client import Client
 
 
 class Discogs(object):
+    """Wraps the discogs_client library. Encapsulating Search, Artist
+    Release, Master, Label objects. Utility functionality in order to
+    render output for terminal consumption.
 
-    APP = 'discogs-cli/' + __version__
+    :type APP_VERSION: str (Const)
+    :param APP_VERSION: Version of discogs-cli
+
+    :type HEADER_COLOUR: str (const)
+    :param HEADER_COLOUR: ANSI colour configuration for header records
+
+    :type LABEL_COLOUR: str (const)
+    :param LABEL_COLOUR: ANSI colour representation for column label fields.
+
+    :type ID_COLOUR: str (const)
+    :param ID_COLOUR: ANSI colour config for discogs id fields.
+
+    :type client: :class:`discogs_client.client.Client`
+    :param client: An instance of `discogs_client.client.Client`
+    """
+
+    APP_VERSION = 'discogs-cli/' + __version__
     HEADER_COLOUR = 'yellow'
     LABEL_COLOUR = 'cyan'
     ID_COLOUR = 'blue'
 
     def __init__(self, user_token=None):
-        self.client = Client(Discogs.APP, user_token=user_token)
+        self.client = Client(Discogs.APP_VERSION, user_token=user_token)
 
     def cheader(self, label):
         """Colour style for page header rows
@@ -37,14 +55,20 @@ class Discogs(object):
         """Colour style for discogs id field.
 
         :type label: str
-        :param label: A string representing discogs id."""
+        :param label: A string representing discogs id.
+
+        :rtype: str
+        :return: ANSI formatted string containing a discogs id."""
         return click.style(discogs_id, fg=Discogs.ID_COLOUR)
 
     def _artists(self, artists):
         """Formats the artist name and database id.
 
         :type artists: list
-        :param artists: A list containing 1 or more artists data structures."""
+        :param artists: A list containing 1 or more artists data structures.
+
+        :rtype: list
+        :return: List of formatted artist names and ids."""
 
         try:
             return ['{name} [{id}]'.format(name=x['name'],
@@ -53,13 +77,20 @@ class Discogs(object):
             return []
 
     def _labels(self, labels):
+        """Generates output string containing label and label id details.
+
+        :type labels: list
+        :param labels: List containing 1 or more labels data structures."""
         return self._artists(labels)
 
     def _separator(self, title):
         """Renders the ASCII delimiter/separator
 
         :type title: str
-        :param title: A string representing the delimiter title."""
+        :param title: A string representing the delimiter title.
+
+        :rtype: str
+        :return: A formatted string."""
         MAX = 50
         LEFT = 4
         RIGHT = 3
@@ -68,6 +99,10 @@ class Discogs(object):
                 format(title=title, line='-' * (MAX - 4 - len(title) - RIGHT)))
 
     def _page_artists(self, artists, page=1, end=1):
+        """Renders a paginated list of Artist objects.
+
+        :type artists:
+        :param title: Paginated list containing artist objects."""
         out = []
 
         while page <= end:
@@ -93,10 +128,19 @@ class Discogs(object):
 
 
 class Search(Discogs):
+    """Performs a search against discogs Artists, Releases or Labels
 
-    def __init__(self, q, q_type='release'):
-        # TODO: user_token temp.
-        super(Search, self).__init__(user_token=os.environ['TOKEN'])
+    :type q: str
+    :param q: Query string.
+
+    :type q_type: str
+    :param q_type: Type of query to perform release, artist or label.
+
+    :type user_token: str
+    :param user_token: A string containing your discogs.com user_token."""
+
+    def __init__(self, q, q_type='release', user_token=None):
+        super(Search, self).__init__(user_token=user_token)
         self.discogs = self.client.search(q, type=q_type)
         self.q = q
         self.q_type = q_type
@@ -104,8 +148,8 @@ class Search(Discogs):
     def show(self):
 
         out = []
-        out.append(self._separator('{n} {qt}(s) matching "{q}"').format(q=self.q,
-                   qt=self.q_type, n=self.discogs.count))
+        out.append(self._separator('{n} {qt}(s) matching "{q}"').format(
+            q=self.q, qt=self.q_type, n=self.discogs.count))
         if self.q_type == 'release':
             out += self._page_releases(self.discogs)
         elif self.q_type == 'artist':
@@ -117,6 +161,10 @@ class Search(Discogs):
 
 
 class Label(Discogs):
+    """Displays a Discogs Label and its associated releases.
+
+    :type label_id: int
+    :param label_id: Discogs label id"""
 
     def __init__(self, label_id):
         super(Label, self).__init__()
@@ -157,7 +205,9 @@ class Artist(Discogs):
     George "DJ E.A.S.E." Evelyn and Kevin "Boywonder" Harper. Harper left before the
     release of Smokers Delight. When playing live they were also joined by MC Toz 180
     and guitarist Chris Dawkins.
-    """
+
+    :type artist_id: int
+    :param artist_id: A Discogs artist id."""
 
     def __init__(self, artist_id):
         super(Artist, self).__init__()
@@ -181,7 +231,13 @@ class Artist(Discogs):
         out += self._page_releases(self.discogs.releases)
         click.echo_via_pager('\n'.join(out))
 
+
 class Master(Discogs):
+    """Displays a master release and its associated releases.
+
+       :type master_id: int
+       :param master_id: A Discogs master release id."""
+
     def __init__(self, master_id):
         super(Master, self).__init__()
         self.master_id = master_id
@@ -194,6 +250,7 @@ class Master(Discogs):
         out.append(self._separator('Versions'))
         out += self._page_releases(self.discogs.versions)
         click.echo_via_pager('\n'.join(out))
+
 
 class Release(Discogs):
     """
@@ -209,6 +266,9 @@ class Release(Discogs):
     A2  -   House For All (House 4 All Robots Mix)
     --[ Notes ] ---------------------------------------
     "House For All (Original Mix)" was originally released on the Mad Trax E.P.
+
+    :type release_id: int
+    :param release_id: A Discogs.com release id.
     """
 
     def __init__(self, release_id):
@@ -232,7 +292,8 @@ class Release(Discogs):
             labels=', '.join(labels)))
 
         formats = ['{name} ({desc})'.format(name=x.get('name'),
-            desc=x.get('descriptions')) for x in self.discogs.data['formats']]
+            desc=', '.join(x.get('descriptions', [])))
+                    for x in self.discogs.data['formats']]
         out.append(self.clabel('Format:') + '   {name}'.format(name=','.join(
             formats)))
 
