@@ -28,8 +28,11 @@ TOKEN = 'ogs '
 
 
 def execute(cmd):
+    # TODO: BUG: will not work on windows.
+    PAGING = '|less -F -r -X --prompt "[space] for next page [q] to quit."'
+
     try:
-        subprocess.call(cmd, shell=True)
+        subprocess.call(cmd + PAGING, shell=True)
     except Exception as e:
         click.secho(e, fg='red')
 

@@ -103,28 +103,24 @@ class Discogs(object):
 
         :type artists:
         :param title: Paginated list containing artist objects."""
-        out = []
 
         while page <= end:
             for r in artists.page(page):
-                out.append('{artist} [{id}]'.format(artist=r.name,
-                        id=self.cid(str(r.id))))
+                click.echo('{artist} [{id}]'.format(artist=r.name,
+                        id=self.cid(str(r.id))), color=True)
             page += 1
-        return out
 
     def _page_labels(self, labels, page=1, end=1):
         return self._page_artists(labels, page=page, end=end)
 
     def _page_releases(self, releases, page=1, end=1):
-        out = []
 
         while page <= end:
             for r in releases.page(page):
                 year = getattr(r, 'year', 'MASTER')
-                out.append('{year}\t{title} [{id}]'.format(year=year,
-                title=r.title, id=self.cid(str(r.id))))
+                click.echo('{year}\t{title} [{id}]'.format(year=year,
+                title=r.title, id=self.cid(str(r.id))), color=True)
             page += 1
-        return out
 
 
 class Search(Discogs):
@@ -150,14 +146,14 @@ class Search(Discogs):
         out = []
         out.append(self._separator('{n} {qt}(s) matching "{q}"').format(
             q=self.q, qt=self.q_type, n=self.discogs.count))
-        if self.q_type == 'release':
-            out += self._page_releases(self.discogs)
-        elif self.q_type == 'artist':
-            out += self._page_artists(self.discogs)
-        elif self.q_type == 'label':
-            out += self._page_labels(self.discogs)
+        click.echo('\n'.join(out), color=True)
 
-        click.echo_via_pager('\n'.join(out))
+        if self.q_type == 'release':
+            self._page_releases(self.discogs, end=self.discogs.pages)
+        elif self.q_type == 'artist':
+            self._page_artists(self.discogs, end=self.discogs.pages)
+        elif self.q_type == 'label':
+            self._page_labels(self.discogs, end=self.discogs.pages)
 
 
 class Label(Discogs):
@@ -189,9 +185,10 @@ class Label(Discogs):
         out.append('{url}'.format(url='\n'.join(self.discogs.data.get('urls',
             ['None']))))
         out.append(self._separator('Releases'))
-        out += self._page_releases(self.discogs.releases)
+        click.echo('\n'.join(out), color=True)
 
-        click.echo_via_pager('\n'.join(out))
+        self._page_releases(self.discogs.releases, page=1, end=
+                            self.discogs.releases.pages)
 
 
 class Artist(Discogs):
@@ -228,8 +225,9 @@ class Artist(Discogs):
         out.append(self._separator('Profile'))
         out.append(self.discogs.data.get('profile', 'None.'))
         out.append(self._separator('Releases'))
-        out += self._page_releases(self.discogs.releases)
-        click.echo_via_pager('\n'.join(out))
+        click.echo('\n'.join(out), color=True)
+        self._page_releases(self.discogs.releases, page=1, end=
+                            self.discogs.releases.pages)
 
 
 class Master(Discogs):
@@ -248,8 +246,9 @@ class Master(Discogs):
 
         out.append(self.cheader(self.discogs.title))
         out.append(self._separator('Versions'))
-        out += self._page_releases(self.discogs.versions)
-        click.echo_via_pager('\n'.join(out))
+        click.echo('\n'.join(out), color=True)
+        self._page_releases(self.discogs.versions, page=1, end=
+                            self.discogs.versions.pages)
 
 
 class Release(Discogs):
@@ -313,4 +312,4 @@ class Release(Discogs):
 
         out.append(self._separator('Notes'))
         out.append(self.discogs.data.get('notes', 'None.'))
-        click.echo_via_pager('\n'.join(out))
+        click.echo('\n'.join(out), color=True)

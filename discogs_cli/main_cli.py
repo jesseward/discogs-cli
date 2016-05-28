@@ -23,6 +23,8 @@ def label(label_id):
 
     try:
         r.show()
+    except IOError as e:
+        pass
     except Exception as e:
         click.secho('Unable to fetch label id: {label_id} ({e})'.format(
             label_id=label_id, e=e), fg='red')
@@ -48,6 +50,8 @@ def artist(artist_id):
     r = Artist(artist_id)
     try:
         r.show()
+    except IOError as e:
+        pass
     except Exception as e:
         click.secho('Unable to fetch artist id: {artist_id} ({e})'.format(
             artist_id=artist_id, e=e), fg='red')
@@ -60,6 +64,8 @@ def artist(master_id):
     r = Master(master_id)
     try:
         r.show()
+    except IOError as e:
+        pass
     except Exception as e:
         click.secho('Unable to fetch master id: {master_id} ({e})'.format(
             master_id=master_id, e=e), fg='red')
@@ -80,6 +86,8 @@ def search(query, lookup):
 
         try:
             s.show()
+        except IOError as e:
+            pass
         except Exception as e:
             click.secho('Unable to perform a {t} search for {q} ({e})'.format(
                  t=lookup, q=query, e=e), fg='red')
