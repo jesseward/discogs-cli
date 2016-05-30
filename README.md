@@ -9,9 +9,6 @@ discogs-cli bring the Discogs.com database to your terminal. Perform the followi
 * View label details and its associated releases
 * View a release in detail
 
-## TODO
-* Currently runs on a Unix like operating system only (Linux/OSX). If you can test and patch use for windows, please log a pull request.
-
 
 ## Access to search functionality
 
@@ -39,3 +36,12 @@ Once installed, run `discogs-cli` to launch the interactive command prompt.
 To launch commands from the console
 
     $ ogs <command> [params] [options]
+
+## TODO
+* Currently runs on a Unix like operating system only (Linux/OSX). If you can test and patch use for windows, please log a pull request.
+
+## About
+discogs-cli builds upon the following awesome Python libraries
+* The python-prompt-toolkit https://github.com/jonathanslenders/python-prompt-toolkit 
+* Discogs.com api client https://github.com/discogs/discogs_client
+* Haxor-news string completion library https://github.com/donnemartin/haxor-news
