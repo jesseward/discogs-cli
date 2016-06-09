@@ -22,7 +22,7 @@ import six
 import shlex
 from prompt_toolkit.completion import Completion
 
-from .completions import META_LOOKUP
+from ..completions import META_LOOKUP
 
 
 class TextUtils(object):

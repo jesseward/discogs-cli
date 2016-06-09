@@ -17,7 +17,7 @@ from .__init__ import __version__
 from .ext.completer import Completer
 from .discogs import Release, Artist, Label
 from .pyglexer import DiscogsCliLexer
-from .utils import TextUtils
+from .ext.utils import TextUtils
 
 
 import requests
