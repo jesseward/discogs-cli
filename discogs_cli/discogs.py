@@ -113,13 +113,19 @@ class Discogs(object):
     def _page_labels(self, labels, page=1, end=1):
         return self._page_artists(labels, page=page, end=end)
 
-    def _page_releases(self, releases, page=1, end=1):
+    def _page_releases(self, releases, page=1, end=1, show_artist=False):
+
+        if not show_artist:
+            artist = ''
 
         while page <= end:
             for r in releases.page(page):
+                if show_artist:
+                    artist = r.data['artist'] + ' - '
                 year = getattr(r, 'year', 'MASTER')
-                click.echo('{year}\t{title} [{id}]'.format(year=year,
-                title=r.title, id=self.cid(str(r.id))), color=True)
+                click.echo('{year}\t{artist}{title} [{id}]'.format(year=year,
+                title=r.title, id=self.cid(str(r.id)), artist=artist),
+                color=True)
             page += 1
 
 
@@ -188,7 +194,7 @@ class Label(Discogs):
         click.echo('\n'.join(out), color=True)
 
         self._page_releases(self.discogs.releases, page=1, end=
-                            self.discogs.releases.pages)
+                            self.discogs.releases.pages, show_artist=True)
 
 
 class Artist(Discogs):
@@ -303,7 +309,9 @@ class Release(Discogs):
             self.discogs.genres)))
         out.append(self.clabel('Style:') + '    {style}'.format(style=', '.join(
             self.discogs.styles)))
-
+        out.append(self.clabel('Rating:') + '   {rating}/5'.format(
+            rating=self.discogs.data.get('community', {}).get('rating',
+                    {}).get('average')))
         out.append(self._separator('Tracklist'))
         for t in self.discogs.data['tracklist']:
             duration = '   {0}'.format(t.get('duration'))
