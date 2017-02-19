@@ -13,7 +13,7 @@ from prompt_toolkit.styles.from_pygments import style_from_pygments
 from pygments.styles import get_style_by_name
 
 from .__init__ import __version__
-#from .completion import command_completer
+# from .completion import command_completer
 from .ext.completer import Completer
 from .discogs import Release, Artist, Label
 from .pyglexer import DiscogsCliLexer

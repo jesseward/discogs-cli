@@ -1,4 +1,4 @@
-![Imgur](http://i.imgur.com/iAXgnIj.gif)
+![Imgur](http://www.jesseward.com/github/discogs-cli.gif)
 
 # discogs-cli
 
@@ -20,7 +20,15 @@ Before starting your application set the `TOKEN` shell variable. where `sys64738
 
 ## Installation
 
-To install from the github source, please ensure you've created a virtual environment.
+To install from PyPi, please use `pip` or `easy_install`. For example
+
+    $ pip install discogs-cli
+
+or 
+
+    $ easy_install discogs-cli
+
+Note that installing into a `virtualenv` is generally recommended. If you wish to install the latest and greatest via github source, please ensure you've created a virtual environment.
 
     $ virtualenv ~/.virtualenv/discogs-cli
     $ source ~/.virtualenv/discogs-cli/bin/activate
