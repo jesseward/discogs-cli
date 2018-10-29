@@ -30,7 +30,7 @@ setup(
         'click==6.7',
         'discogs-client==2.2.1',
         'prompt-toolkit==1.0.13',
-        'requests==2.13.0',
+        'requests==2.20.0',
     ],
     entry_points={
         'console_scripts': [
