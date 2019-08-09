@@ -287,7 +287,6 @@ class Release(Discogs):
     def show(self):
         out = []
         year = self.discogs.year
-        self.discogs.images
         extraartists = self.discogs.data["extraartists"]
         out.append('{artists} - {title}'.format(artists=','.join(
             self._artists(self.discogs.data['artists'])),
@@ -319,9 +318,7 @@ class Release(Discogs):
         click.echo('\n'.join(out), color=True)
 
     def show_extra(self,exclude,include,out):
-        personnel = True
-        tracklist = True
-        notes = True
+        personnel,tracklist,notes = True,True,True
         if "personnel" in exclude:
             personnel = False
         elif "tracklist" in exclude:
