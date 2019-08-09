@@ -32,9 +32,11 @@ def label(label_id):
 
 @cli.command('release')
 @click.argument('release_id')
-def release(release_id):
+@click.option('--exclude', default="None")
+@click.option('--include', default="All")
+def release(release_id,exclude,include):
     """Retrieve a single release from the discogs database."""
-    r = Release(release_id)
+    r = Release(release_id,exclude=exclude,include=include)
 
     try:
         r.show()
