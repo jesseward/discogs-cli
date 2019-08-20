@@ -309,8 +309,11 @@ class Release(Discogs):
         out.append(self.clabel('Year:') + '     {year}'.format(year=year))
         out.append(self.clabel('Genre:') + '    {genre}'.format(genre=', '.join(
             self.discogs.genres)))
-        out.append(self.clabel('Style:') + '    {style}'.format(style=', '.join(
-            self.discogs.styles)))
+        try:
+            out.append(self.clabel('Style:') + '    {style}'.format(style=', '.join(
+                self.discogs.styles)))
+        except:
+            print("Style info not available.")
         out.append(self.clabel('Rating:') + '   {rating}/5'.format(
             rating=self.discogs.data.get('community', {}).get('rating',
                     {}).get('average'))) 
