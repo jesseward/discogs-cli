@@ -18,22 +18,26 @@ ARGS_OPTS_LOOKUP = {
     },
     'master': {
         'args': '1',
-        'opts': '',
+        'opts': ''
     },
     'release': {
         'args': '1',
-        'opts': '',
+        'opts': [
+            '--exclude (personnel|tracklist|notes)',
+            '--include (personnel|tracklist|notes)'
+        ]
     },
     'search': {
         'args': '"query string"',
         'opts': [
             '--lookup (artist|label|release)',
-        ],
+        ]
     },
 }
 META_LOOKUP = {
     '1': 'id: int - discogs ID to retrieve',
     '--lookup': '(artist|label|release)',
-    '"(artist|label|release)"': 'Type of query to perform',
+    '--exclude': '(personnel|tracklist|notes)',
+    '--include': '(personnel|tracklist|notes)'
 }
 META_LOOKUP.update(SUBCOMMANDS)
