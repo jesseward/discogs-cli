@@ -1,5 +1,5 @@
 Pygments==2.15.0
-click==6.6
+click>=6.6
 discogs-client==2.2.1
 oauthlib==1.1.1
 prompt-toolkit==1.0.0

@@ -29,10 +29,10 @@ class Discogs(object):
     :param client: An instance of `discogs_client.client.Client`
     """
 
-    APP_VERSION = 'discogs-cli/' + __version__
-    HEADER_COLOUR = 'yellow'
-    LABEL_COLOUR = 'cyan'
-    ID_COLOUR = 'blue'
+    APP_VERSION = "discogs-cli/" + __version__
+    HEADER_COLOUR = "yellow"
+    LABEL_COLOUR = "cyan"
+    ID_COLOUR = "blue"
 
     def __init__(self, user_token=None):
         self.client = Client(Discogs.APP_VERSION, user_token=user_token)
@@ -71,8 +71,10 @@ class Discogs(object):
         :return: List of formatted artist names and ids."""
 
         try:
-            return ['{name} [{id}]'.format(name=x['name'],
-                id=self.cid(str(x['id']))) for x in artists]
+            return [
+                "{name} [{id}]".format(name=x["name"], id=self.cid(str(x["id"])))
+                for x in artists
+            ]
         except TypeError:
             return []
 
@@ -92,11 +94,12 @@ class Discogs(object):
         :rtype: str
         :return: A formatted string."""
         MAX = 50
-        LEFT = 4
         RIGHT = 3
         return (
-          ' -- [ ' + click.style(title, fg=Discogs.LABEL_COLOUR) + ' ] {line}'.
-                format(title=title, line='-' * (MAX - 4 - len(title) - RIGHT)))
+            " -- [ "
+            + click.style(title, fg=Discogs.LABEL_COLOUR)
+            + " ] {line}".format(title=title, line="-" * (MAX - 4 - len(title) - RIGHT))
+        )
 
     def _page_artists(self, artists, page=1, end=1):
         """Renders a paginated list of Artist objects.
@@ -106,26 +109,30 @@ class Discogs(object):
 
         while page <= end:
             for r in artists.page(page):
-                click.echo('{artist} [{id}]'.format(artist=r.name,
-                        id=self.cid(str(r.id))), color=True)
+                click.echo(
+                    "{artist} [{id}]".format(artist=r.name, id=self.cid(str(r.id))),
+                    color=True,
+                )
             page += 1
 
     def _page_labels(self, labels, page=1, end=1):
         return self._page_artists(labels, page=page, end=end)
 
     def _page_releases(self, releases, page=1, end=1, show_artist=False):
-
         if not show_artist:
-            artist = ''
+            artist = ""
 
         while page <= end:
             for r in releases.page(page):
                 if show_artist:
-                    artist = r.data['artist'] + ' - '
-                year = getattr(r, 'year', 'MASTER')
-                click.echo('{year}\t{artist}{title} [{id}]'.format(year=year,
-                title=r.title, id=self.cid(str(r.id)), artist=artist),
-                color=True)
+                    artist = r.data["artist"] + " - "
+                year = getattr(r, "year", "MASTER")
+                click.echo(
+                    "{year}\t{artist}{title} [{id}]".format(
+                        year=year, title=r.title, id=self.cid(str(r.id)), artist=artist
+                    ),
+                    color=True,
+                )
             page += 1
 
 
@@ -141,24 +148,26 @@ class Search(Discogs):
     :type user_token: str
     :param user_token: A string containing your discogs.com user_token."""
 
-    def __init__(self, q, q_type='release', user_token=None):
+    def __init__(self, q, q_type="release", user_token=None):
         super(Search, self).__init__(user_token=user_token)
         self.discogs = self.client.search(q, type=q_type)
         self.q = q
         self.q_type = q_type
 
     def show(self):
-
         out = []
-        out.append(self._separator('{n} {qt}(s) matching "{q}"').format(
-            q=self.q, qt=self.q_type, n=self.discogs.count))
-        click.echo('\n'.join(out), color=True)
+        out.append(
+            self._separator('{n} {qt}(s) matching "{q}"').format(
+                q=self.q, qt=self.q_type, n=self.discogs.count
+            )
+        )
+        click.echo("\n".join(out), color=True)
 
-        if self.q_type == 'release':
+        if self.q_type == "release":
             self._page_releases(self.discogs, end=self.discogs.pages)
-        elif self.q_type == 'artist':
+        elif self.q_type == "artist":
             self._page_artists(self.discogs, end=self.discogs.pages)
-        elif self.q_type == 'label':
+        elif self.q_type == "label":
             self._page_labels(self.discogs, end=self.discogs.pages)
 
 
@@ -178,23 +187,36 @@ class Label(Discogs):
         out.append(self.cheader(self.discogs.name))
 
         if self.discogs.parent_label is not None:
-            out.append(self.clabel('Parent      :') + ' {parent} [{id}]'.
-                    format(parent=self.discogs.parent_label.name,
-                           id=self.cid(str(self.discogs.parent_label.id))))
-        out.append(self.clabel('Sublabels   :') + ' {sublabels}'.format(
-            sublabels=', '.join(self._labels(
-                self.discogs.data.get('sublabels', [])))))
-        out.append(self._separator('Profile'))
-        out.append('{prof}'.format(prof=self.discogs.data.get(
-            'profile', 'None.')))
-        out.append(self._separator('URLS'))
-        out.append('{url}'.format(url='\n'.join(self.discogs.data.get('urls',
-            ['None']))))
-        out.append(self._separator('Releases'))
-        click.echo('\n'.join(out), color=True)
+            out.append(
+                self.clabel("Parent      :")
+                + " {parent} [{id}]".format(
+                    parent=self.discogs.parent_label.name,
+                    id=self.cid(str(self.discogs.parent_label.id)),
+                )
+            )
+        out.append(
+            self.clabel("Sublabels   :")
+            + " {sublabels}".format(
+                sublabels=", ".join(
+                    self._labels(self.discogs.data.get("sublabels", []))
+                )
+            )
+        )
+        out.append(self._separator("Profile"))
+        out.append("{prof}".format(prof=self.discogs.data.get("profile", "None.")))
+        out.append(self._separator("URLS"))
+        out.append(
+            "{url}".format(url="\n".join(self.discogs.data.get("urls", ["None"])))
+        )
+        out.append(self._separator("Releases"))
+        click.echo("\n".join(out), color=True)
 
-        self._page_releases(self.discogs.releases, page=1, end=
-                            self.discogs.releases.pages, show_artist=True)
+        self._page_releases(
+            self.discogs.releases,
+            page=1,
+            end=self.discogs.releases.pages,
+            show_artist=True,
+        )
 
 
 class Artist(Discogs):
@@ -221,26 +243,38 @@ class Artist(Discogs):
         out = []
 
         out.append(self.cheader(self.discogs.name))
-        out.append(self.clabel('Members     ') + ': {members}'.format(
-            members=', '.join(self._artists(
-                self.discogs.data.get('members', [])))))
-        out.append(self.clabel('Variations  ') + ': {var}'.format(var=', '.join(
-            self.discogs.data.get('namevariations', []))))
-        out.append(self.clabel('In groups   ') + ': {groups}'.format(groups=
-            ', '.join(self._artists(self.discogs.data.get('groups', [])))))
-        out.append(self._separator('Profile'))
-        out.append(self.discogs.data.get('profile', 'None.'))
-        out.append(self._separator('Releases'))
-        click.echo('\n'.join(out), color=True)
-        self._page_releases(self.discogs.releases, page=1, end=
-                            self.discogs.releases.pages)
+        out.append(
+            self.clabel("Members     ")
+            + ": {members}".format(
+                members=", ".join(self._artists(self.discogs.data.get("members", [])))
+            )
+        )
+        out.append(
+            self.clabel("Variations  ")
+            + ": {var}".format(
+                var=", ".join(self.discogs.data.get("namevariations", []))
+            )
+        )
+        out.append(
+            self.clabel("In groups   ")
+            + ": {groups}".format(
+                groups=", ".join(self._artists(self.discogs.data.get("groups", [])))
+            )
+        )
+        out.append(self._separator("Profile"))
+        out.append(self.discogs.data.get("profile", "None."))
+        out.append(self._separator("Releases"))
+        click.echo("\n".join(out), color=True)
+        self._page_releases(
+            self.discogs.releases, page=1, end=self.discogs.releases.pages
+        )
 
 
 class Master(Discogs):
     """Displays a master release and its associated releases.
 
-       :type master_id: int
-       :param master_id: A Discogs master release id."""
+    :type master_id: int
+    :param master_id: A Discogs master release id."""
 
     def __init__(self, master_id):
         super(Master, self).__init__()
@@ -251,10 +285,11 @@ class Master(Discogs):
         out = []
 
         out.append(self.cheader(self.discogs.title))
-        out.append(self._separator('Versions'))
-        click.echo('\n'.join(out), color=True)
-        self._page_releases(self.discogs.versions, page=1, end=
-                            self.discogs.versions.pages)
+        out.append(self._separator("Versions"))
+        click.echo("\n".join(out), color=True)
+        self._page_releases(
+            self.discogs.versions, page=1, end=self.discogs.versions.pages
+        )
 
 
 class Release(Discogs):
@@ -286,38 +321,60 @@ class Release(Discogs):
         out = []
         year = self.discogs.year
 
-        out.append('{artists} - {title}'.format(artists=','.join(
-            self._artists(self.discogs.data['artists'])),
-            title=self.discogs.data['title']))
+        out.append(
+            "{artists} - {title}".format(
+                artists=",".join(self._artists(self.discogs.data["artists"])),
+                title=self.discogs.data["title"],
+            )
+        )
 
-        labels = ['{label} ({cat}) [{id}]'.format(label=x.get('name'), cat=
-            x.get('catno'), id=self.cid(str(x.get('id'))))
-            for x in self.discogs.data['labels']]
-        out.append(self.clabel('Label:') + '    {labels}'.format(
-            labels=', '.join(labels)))
+        labels = [
+            "{label} ({cat}) [{id}]".format(
+                label=x.get("name"), cat=x.get("catno"), id=self.cid(str(x.get("id")))
+            )
+            for x in self.discogs.data["labels"]
+        ]
+        out.append(
+            self.clabel("Label:") + "    {labels}".format(labels=", ".join(labels))
+        )
 
-        formats = ['{name} ({desc})'.format(name=x.get('name'),
-            desc=', '.join(x.get('descriptions', [])))
-                    for x in self.discogs.data['formats']]
-        out.append(self.clabel('Format:') + '   {name}'.format(name=','.join(
-            formats)))
+        formats = [
+            "{name} ({desc})".format(
+                name=x.get("name"), desc=", ".join(x.get("descriptions", []))
+            )
+            for x in self.discogs.data["formats"]
+        ]
+        out.append(self.clabel("Format:") + "   {name}".format(name=",".join(formats)))
 
-        out.append(self.clabel('Country:') + '  {country}'.format(
-            country=self.discogs.country))
-        out.append(self.clabel('Year:') + '     {year}'.format(year=year))
-        out.append(self.clabel('Genre:') + '    {genre}'.format(genre=', '.join(
-            self.discogs.genres)))
-        out.append(self.clabel('Style:') + '    {style}'.format(style=', '.join(
-            self.discogs.styles)))
-        out.append(self.clabel('Rating:') + '   {rating}/5'.format(
-            rating=self.discogs.data.get('community', {}).get('rating',
-                    {}).get('average')))
-        out.append(self._separator('Tracklist'))
-        for t in self.discogs.data['tracklist']:
-            duration = '   {0}'.format(t.get('duration'))
-            out.append('{pos}\t{title} {dur}'.format(
-                pos=t['position'], title=t['title'], dur=duration))
+        out.append(
+            self.clabel("Country:") + "  {country}".format(country=self.discogs.country)
+        )
+        out.append(self.clabel("Year:") + "     {year}".format(year=year))
+        out.append(
+            self.clabel("Genre:")
+            + "    {genre}".format(genre=", ".join(self.discogs.genres))
+        )
+        out.append(
+            self.clabel("Style:")
+            + "    {style}".format(style=", ".join(self.discogs.styles))
+        )
+        out.append(
+            self.clabel("Rating:")
+            + "   {rating}/5".format(
+                rating=self.discogs.data.get("community", {})
+                .get("rating", {})
+                .get("average")
+            )
+        )
+        out.append(self._separator("Tracklist"))
+        for t in self.discogs.data["tracklist"]:
+            duration = "   {0}".format(t.get("duration"))
+            out.append(
+                "{pos}\t{title} {dur}".format(
+                    pos=t["position"], title=t["title"], dur=duration
+                )
+            )
 
-        out.append(self._separator('Notes'))
-        out.append(self.discogs.data.get('notes', 'None.'))
-        click.echo('\n'.join(out), color=True)
+        out.append(self._separator("Notes"))
+        out.append(self.discogs.data.get("notes", "None."))
+        click.echo("\n".join(out), color=True)

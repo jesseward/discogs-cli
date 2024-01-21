@@ -44,8 +44,7 @@ class TextUtils(object):
         :return: Yields an instance of `prompt_toolkit.completion.Completion`.
         """
         word = self._last_token(word).lower()
-        for suggestion in self._find_collection_matches(
-                word, collection, fuzzy):
+        for suggestion in self._find_collection_matches(word, collection, fuzzy):
             yield suggestion
 
     def get_tokens(self, text):
@@ -78,7 +77,7 @@ class TextUtils(object):
                 word = self._safe_split(text)[-1]
                 word = word.strip()
                 return word
-        return ''
+        return ""
 
     def _fuzzy_finder(self, text, collection, case_sensitive=True):
         """Customized fuzzy finder with optional case-insensitive matching.
@@ -102,9 +101,9 @@ class TextUtils(object):
         """
         suggestions = []
         if case_sensitive:
-            pat = '.*?'.join(map(re.escape, text))
+            pat = ".*?".join(map(re.escape, text))
         else:
-            pat = '.*?'.join(map(re.escape, text.lower()))
+            pat = ".*?".join(map(re.escape, text.lower()))
         regex = re.compile(pat)
         for item in collection:
             if case_sensitive:
@@ -132,12 +131,10 @@ class TextUtils(object):
         """
         word = word.lower()
         if fuzzy:
-            for suggestion in self._fuzzy_finder(word,
-                                                 collection,
-                                                 case_sensitive=False):
-                yield Completion(suggestion,
-                                 -len(word),
-                                 display_meta='display_meta')
+            for suggestion in self._fuzzy_finder(
+                word, collection, case_sensitive=False
+            ):
+                yield Completion(suggestion, -len(word), display_meta="display_meta")
         else:
             for name in sorted(collection):
                 if name.lower().startswith(word) or not word:
@@ -145,10 +142,9 @@ class TextUtils(object):
                     display_meta = None
                     if name in META_LOOKUP:
                         display_meta = META_LOOKUP[name]
-                    yield Completion(name,
-                                     -len(word),
-                                     display=display,
-                                     display_meta=display_meta)
+                    yield Completion(
+                        name, -len(word), display=display, display_meta=display_meta
+                    )
 
     def _shlex_split(self, text):
         """Wrapper for shlex, because it does not seem to handle unicode in 2.6.
@@ -160,7 +156,7 @@ class TextUtils(object):
         :return: A list that contains words for each split element of text.
         """
         if six.PY2:
-            text = text.encode('utf-8')
+            text = text.encode("utf-8")
         return shlex.split(text)
 
     def _safe_split(self, text):
