@@ -26,7 +26,7 @@ setup(
     url='https://github.com/jesseward/discogs-cli',
     license='MIT',
     install_requires=[
-        'Pygments==2.2.0',
+        'Pygments==2.7.4',
         'click==6.7',
         'discogs-client==2.2.1',
         'prompt-toolkit==1.0.13',
