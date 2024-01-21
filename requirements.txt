@@ -3,6 +3,6 @@ click==6.6
 discogs-client==2.2.1
 oauthlib==1.1.1
 prompt-toolkit==1.0.0
-requests==2.20.0
+requests==2.31.0
 six==1.10.0
 wcwidth==0.1.6
