@@ -276,16 +276,18 @@ class Release(Discogs):
     :param release_id: A Discogs.com release id.
     """
 
-    def __init__(self, release_id):
+    def __init__(self, release_id, exclude="None", include="All"):
         super(Release, self).__init__()
         self.release_id = release_id
-
         self.discogs = self.client.release(self.release_id)
+        self.exclude = exclude
+        self.include = include
+
 
     def show(self):
         out = []
         year = self.discogs.year
-
+        extraartists = self.discogs.data["extraartists"]
         out.append('{artists} - {title}'.format(artists=','.join(
             self._artists(self.discogs.data['artists'])),
             title=self.discogs.data['title']))
@@ -307,17 +309,46 @@ class Release(Discogs):
         out.append(self.clabel('Year:') + '     {year}'.format(year=year))
         out.append(self.clabel('Genre:') + '    {genre}'.format(genre=', '.join(
             self.discogs.genres)))
-        out.append(self.clabel('Style:') + '    {style}'.format(style=', '.join(
-            self.discogs.styles)))
+        try:
+            out.append(self.clabel('Style:') + '    {style}'.format(style=', '.join(
+                self.discogs.styles)))
+        except:
+            print("Style info not available.")
         out.append(self.clabel('Rating:') + '   {rating}/5'.format(
             rating=self.discogs.data.get('community', {}).get('rating',
-                    {}).get('average')))
-        out.append(self._separator('Tracklist'))
-        for t in self.discogs.data['tracklist']:
-            duration = '   {0}'.format(t.get('duration'))
-            out.append('{pos}\t{title} {dur}'.format(
-                pos=t['position'], title=t['title'], dur=duration))
-
-        out.append(self._separator('Notes'))
-        out.append(self.discogs.data.get('notes', 'None.'))
+                    {}).get('average'))) 
+        out = self.show_extra(self.exclude,self.include,out)
         click.echo('\n'.join(out), color=True)
+
+    def show_extra(self,exclude,include,out):
+        personnel,tracklist,notes = True,True,True
+        if "personnel" in exclude:
+            personnel = False
+        elif "tracklist" in exclude:
+            tracklist = False
+        elif "notes" in exclude:
+            notes = False
+        elif "personnel" in include:
+            tracklist,notes = False,False
+        elif "tracklist" in include:
+            personnel,notes = False,False
+        elif "notes" in include:
+            personnel,tracklist = False,False
+
+        if personnel is True:
+            out.append(self._separator('Personnel'))
+            for t in self.discogs.data['extraartists']:
+                name = t["name"]
+                role = t["role"]
+                out.append(self.clabel('{role}: '.format(role=role)) + ' {name}'.format(
+                    name=name))
+        if tracklist is True:
+            out.append(self._separator('Tracklist'))
+            for t in self.discogs.data['tracklist']:
+                duration = '   {0}'.format(t.get('duration'))
+                out.append('{pos}\t{title} {dur}'.format(
+                    pos=t['position'], title=t['title'], dur=duration))
+        if notes is True:      
+            out.append(self._separator('Notes'))
+            out.append(self.discogs.data.get('notes', 'None.'))
+        return out
