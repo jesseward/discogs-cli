@@ -13,19 +13,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import re
+import shlex
 
 import six
-import shlex
 from prompt_toolkit.completion import Completion
 
 from ..completions import META_LOOKUP
 
 
-class TextUtils(object):
+class TextUtils:
     """Utilities for parsing and matching text."""
 
     def find_matches(self, word, collection, fuzzy):

@@ -13,12 +13,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from __future__ import unicode_literals
-from __future__ import print_function
 
 from prompt_toolkit.completion import Completer
 
-from ..completions import SUBCOMMANDS, ARGS_OPTS_LOOKUP
+from ..completions import ARGS_OPTS_LOOKUP, SUBCOMMANDS
 
 
 class Completer(Completer):
@@ -107,7 +105,7 @@ class Completer(Completer):
         :return: A list of options.
         """
         options = []
-        for subcommand, args_opts in ARGS_OPTS_LOOKUP.items():
+        for subcommand, _ in list(ARGS_OPTS_LOOKUP.items()):
             if subcommand in words and (
                 words[-2] == subcommand
                 or self.completing_subcommand_option_util(subcommand, words)
@@ -151,7 +149,7 @@ class Completer(Completer):
         """
         if "ogs" not in words:
             return []
-        for subcommand, args_opts in ARGS_OPTS_LOOKUP.items():
+        for subcommand, _ in list(ARGS_OPTS_LOOKUP.items()):
             if subcommand in words:
                 return [ARGS_OPTS_LOOKUP[subcommand]["args"]]
         return ["10"]

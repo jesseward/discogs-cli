@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import click
-
-from .__init__ import __version__
 from discogs_client import Client
 
+from .__init__ import __version__
 
-class Discogs(object):
+
+class Discogs:
     """Wraps the discogs_client library. Encapsulating Search, Artist
     Release, Master, Label objects. Utility functionality in order to
     render output for terminal consumption.

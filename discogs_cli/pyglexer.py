@@ -1,5 +1,5 @@
 from pygments.lexer import RegexLexer, bygroups
-from pygments.token import Text, String, Keyword, Operator
+from pygments.token import Keyword, Operator, String, Text
 
 __all__ = ["DiscogsCliLexer"]
 

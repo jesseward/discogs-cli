@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import click
 import subprocess
 
+import click
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.lexers import PygmentsLexer
@@ -10,11 +10,10 @@ from prompt_toolkit.styles.pygments import style_from_pygments_cls
 from pygments.styles import get_style_by_name
 
 from .__init__ import __version__
-
 # from .completion import command_completer
 from .ext.completer import Completer
-from .pyglexer import DiscogsCliLexer
 from .ext.utils import TextUtils
+from .pyglexer import DiscogsCliLexer
 
 EXIT = ["quit", "exit", "logoff", "sys64738"]
 TOKEN = "ogs "

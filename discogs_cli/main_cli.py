@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import click
 import os
 
-from .discogs import Release, Artist, Label, Search, Master
+import click
 
-import requests
-
-requests.packages.urllib3.disable_warnings()
+from .discogs import Artist, Label, Master, Release, Search
 
 
 @click.group()
