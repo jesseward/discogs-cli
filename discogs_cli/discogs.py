@@ -118,8 +118,7 @@ class Discogs:
         return self._page_artists(labels, page=page, end=end)
 
     def _page_releases(self, releases, page=1, end=1, show_artist=False):
-        if not show_artist:
-            artist = ""
+        artist = ""
 
         while page <= end:
             for r in releases.page(page):

@@ -1,9 +1,9 @@
 import io
+
 from discogs_cli.__init__ import __version__
 
-
 try:
-    from setuptools import setup, find_packages
+    from setuptools import find_packages, setup
 except ImportError:
     from distutils.core import setup
 
