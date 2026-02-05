@@ -245,9 +245,7 @@ class Artist(Discogs):
         out.append(
             self.clabel("Members     ")
             + ": {members}".format(
-                members=", ".join(
-                    self._artists(self.discogs.data.get("members", []))
-                )
+                members=", ".join(self._artists(self.discogs.data.get("members", [])))
             )
         )
         out.append(
