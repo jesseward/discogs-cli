@@ -29,7 +29,7 @@ setup(
         "Pygments>=2.15.0",
         "click>=6.7",
         "discogs-client>=2.2.1",
-        "prompt-toolkit>=1.0.13",
+        "prompt-toolkit>=3.0.0",
         "requests>=2.31.0",
     ],
     entry_points={
@@ -43,8 +43,9 @@ setup(
     classifiers=[
         "Environment :: Console",
         "Development Status :: 5 - Production/Stable",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],

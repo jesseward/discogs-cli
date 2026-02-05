@@ -3,13 +3,14 @@
 import subprocess
 
 import click
-from prompt_toolkit import prompt
+from prompt_toolkit import PromptSession
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.lexers import PygmentsLexer
-from prompt_toolkit.styles.pygments import style_from_pygments_cls
+from prompt_toolkit.styles import style_from_pygments_cls
 from pygments.styles import get_style_by_name
 
 from .__init__ import __version__
+
 # from .completion import command_completer
 from .ext.completer import Completer
 from .ext.utils import TextUtils
@@ -31,28 +32,28 @@ def execute(cmd):
 
 def cli():
     history = InMemoryHistory()
+    session = PromptSession(history=history)
     style = style_from_pygments_cls(get_style_by_name("monokai"))
     lexer = PygmentsLexer(DiscogsCliLexer)
     completer = Completer(fuzzy_match=False, text_utils=TextUtils())
 
     SYNTAX = "Syntax: ogs <command> [options]"
 
-    click.secho("     _ _                                    _ _ ", fg="yellow")
-    click.secho("  __| (_)___  ___ ___   __ _ ___        ___| (_)", fg="yellow")
-    click.secho(" / _` | / __|/ __/ _ \ / _` / __|_____ / __| | |", fg="yellow")
-    click.secho("| (_| | \__ \ (_| (_) | (_| \__ \_____| (__| | |", fg="yellow")
-    click.secho(" \__,_|_|___/\___\___/ \__, |___/      \___|_|_|", fg="yellow")
-    click.secho("                       |___/", fg="yellow")
+    click.secho(r"     _ _                                    _ _ ", fg="yellow")
+    click.secho(r"  __| (_)___  ___ ___   __ _ ___        ___| (_)", fg="yellow")
+    click.secho(r" / _` | / __|/ __/ _ \ / _` / __|_____ / __| | |", fg="yellow")
+    click.secho(r"| (_| | \__ \ (_| (_) | (_| \__ \_____| (__| | |", fg="yellow")
+    click.secho(r" \__,_|_|___/\___\___/ \__, |___/      \___|_|_|", fg="yellow")
+    click.secho(r"                       |___/", fg="yellow")
 
     click.echo("Version:" + __version__)
     click.echo(SYNTAX)
 
     while True:
         try:
-            text = prompt(
+            text = session.prompt(
                 "discogs-cli >>> ",
                 style=style,
-                history=history,
                 completer=completer,
                 lexer=lexer,
             )

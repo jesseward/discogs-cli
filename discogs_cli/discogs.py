@@ -97,7 +97,7 @@ class Discogs:
         return (
             " -- [ "
             + click.style(title, fg=Discogs.LABEL_COLOUR)
-            + " ] {line}".format(title=title, line="-" * (MAX - 4 - len(title) - RIGHT))
+            + " ] {line}".format(line="-" * (MAX - 4 - len(title) - RIGHT))
         )
 
     def _page_artists(self, artists, page=1, end=1):
@@ -220,7 +220,8 @@ class Label(Discogs):
 class Artist(Discogs):
     """
     Nightmares On Wax
-    Members     : George Evelyn [640294], Kevin Harper [427445], Robin Taylor-Firth [31653]
+    Members     : George Evelyn [640294], Kevin Harper [427445],
+                  Robin Taylor-Firth [31653]
     Variations  : N O W, N.O.W, N.O.W., Nightmare On Wax, Nights On Wax, NoW
     In groups   :
      --[ Profile ] ------------------------------------
@@ -244,7 +245,9 @@ class Artist(Discogs):
         out.append(
             self.clabel("Members     ")
             + ": {members}".format(
-                members=", ".join(self._artists(self.discogs.data.get("members", [])))
+                members=", ".join(
+                    self._artists(self.discogs.data.get("members", []))
+                )
             )
         )
         out.append(
@@ -364,6 +367,7 @@ class Release(Discogs):
                 .get("average")
             )
         )
+
         out.append(self._separator("Tracklist"))
         for t in self.discogs.data["tracklist"]:
             duration = "   {0}".format(t.get("duration"))

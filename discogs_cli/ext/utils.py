@@ -16,7 +16,6 @@
 import re
 import shlex
 
-import six
 from prompt_toolkit.completion import Completion
 
 from ..completions import META_LOOKUP
@@ -143,19 +142,6 @@ class TextUtils:
                         name, -len(word), display=display, display_meta=display_meta
                     )
 
-    def _shlex_split(self, text):
-        """Wrapper for shlex, because it does not seem to handle unicode in 2.6.
-
-        :type text: str
-        :param text: A string to split.
-
-        :rtype: list
-        :return: A list that contains words for each split element of text.
-        """
-        if six.PY2:
-            text = text.encode("utf-8")
-        return shlex.split(text)
-
     def _safe_split(self, text):
         """Safely splits the input text.
 
@@ -168,7 +154,6 @@ class TextUtils:
         :return: A list that contains words for each split element of text.
         """
         try:
-            words = self._shlex_split(text)
-            return words
-        except:
+            return shlex.split(text)
+        except ValueError:
             return text
