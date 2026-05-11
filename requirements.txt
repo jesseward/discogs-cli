@@ -7,5 +7,5 @@ oauthlib==3.2.2
 prompt-toolkit==3.0.43
 Pygments==2.20.0
 requests==2.33.0
-urllib3==2.6.3
+urllib3==2.7.0
 wcwidth==0.2.13
